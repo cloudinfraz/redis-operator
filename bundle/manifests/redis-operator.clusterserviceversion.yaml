@@ -1,0 +1,44 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: ClusterServiceVersion
+metadata:
+  annotations:
+    alm-examples: '[]'
+    capabilities: Basic Install
+    operators.operatorframework.io/builder: operator-sdk-v1.4.2+git
+    operators.operatorframework.io/project_layout: go.kubebuilder.io/v3
+  name: redis-operator.v0.5.2
+  namespace: placeholder
+spec:
+  apiservicedefinitions: {}
+  customresourcedefinitions: {}
+  description: redis-operator
+  displayName: redis-operator
+  icon:
+  - base64data: ""
+    mediatype: ""
+  install:
+    spec:
+      deployments: []
+    strategy: deployment
+  installModes:
+  - supported: false
+    type: OwnNamespace
+  - supported: false
+    type: SingleNamespace
+  - supported: false
+    type: MultiNamespace
+  - supported: true
+    type: AllNamespaces
+  keywords:
+  - redis-operator
+  links:
+  - name: Redis Operator
+    url: https://redis-operator.domain
+  maintainers:
+  - email: zhang.arthur@gmail.com
+    name: jimmy
+  maturity: alpha
+  provider:
+    name: redis-operator
+    url: https://github.com/OT-CONTAINER-KIT/redis-operator
+  version: 0.5.2
