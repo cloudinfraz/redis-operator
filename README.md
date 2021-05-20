@@ -1,3 +1,14 @@
+# Redis Operator
+  This is a Red Hat OLM and Operator learning, development and training github repository, which inspired by https://github.com/OT-CONTAINER-KIT/redis-operator
+
+[OT-CONTAINER-KIT Redis Operator](https://github.com/OT-CONTAINER-KIT/redis-operator)
+
+- 功能比较
+
+<div align="center">
+    <img src="./static/redis-comparsion.png">
+</div>
+
 <p align="center">
   <img src="./static/redis-operator-logo.svg" height="220" width="220">
 </p>
