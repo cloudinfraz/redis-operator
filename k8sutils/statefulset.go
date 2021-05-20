@@ -43,6 +43,7 @@ func GenerateStateFulSetsDef(cr *redisv1beta1.Redis, labels map[string]string, r
 					SecurityContext:   cr.Spec.SecurityContext,
 					PriorityClassName: cr.Spec.PriorityClassName,
 					Affinity:          cr.Spec.Affinity,
+					Volumes:           GenerateVolumesDef(cr, role),
 				},
 			},
 		},
@@ -52,6 +53,18 @@ func GenerateStateFulSetsDef(cr *redisv1beta1.Redis, labels map[string]string, r
 	}
 	AddOwnerRefToObject(statefulset, AsOwner(cr))
 	return statefulset
+}
+
+// GenerateVolumesDef generates volumes definition
+func GenerateVolumesDef(cr *redisv1beta1.Redis, role string) []corev1.Volume {
+	var volumesDefinition []corev1.Volume
+	volumesDefinition = append(volumesDefinition, corev1.Volume{
+		Name: cr.ObjectMeta.Name + "-" + role + "conf",
+		VolumeSource: corev1.VolumeSource{
+			EmptyDir: &corev1.EmptyDirVolumeSource{},
+		},
+	})
+	return volumesDefinition
 }
 
 // GenerateContainerDef generates container definition
@@ -104,11 +117,16 @@ func GenerateContainerDef(cr *redisv1beta1.Redis, role string) corev1.Container 
 		containerDefinition.Resources.Requests[corev1.ResourceMemory] = resource.MustParse(cr.Spec.GlobalConfig.Resources.ResourceRequests.Memory)
 	}
 	if cr.Spec.Storage != nil {
-		VolumeMounts := corev1.VolumeMount{
+		VolumeMounts1 := corev1.VolumeMount{
 			Name:      cr.ObjectMeta.Name + "-" + role,
 			MountPath: "/data",
 		}
-		containerDefinition.VolumeMounts = append(containerDefinition.VolumeMounts, VolumeMounts)
+
+		VolumeMounts2 := corev1.VolumeMount{
+			Name:      cr.ObjectMeta.Name + "-" + role + "conf",
+			MountPath: "/etc/redis",
+		}
+		containerDefinition.VolumeMounts = append(containerDefinition.VolumeMounts, VolumeMounts1,VolumeMounts2)
 	}
 	if cr.Spec.GlobalConfig.Password != nil && cr.Spec.GlobalConfig.ExistingPasswordSecret == nil {
 		containerDefinition.Env = append(containerDefinition.Env, corev1.EnvVar{
@@ -217,6 +235,13 @@ func FinalContainerDef(cr *redisv1beta1.Redis, role string) []corev1.Container {
 	return containerDefinition
 }
 
+//func FinalVolumesDef(cr *redisv1beta1.Redis, role string) []corev1.Volume {
+//   var volumesDefinition []corev1.Volume
+//    if cr.Spec.Storage != nil {
+//	    volumesDefinition = append(volumesDefinition, GenerateVolumesDef(cr, role))
+//	    return containerDefinition
+//    }
+//}
 // CreateRedisMaster will create a Redis Master
 func CreateRedisMaster(cr *redisv1beta1.Redis) {
 

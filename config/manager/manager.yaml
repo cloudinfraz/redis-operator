@@ -29,7 +29,7 @@ spec:
         - /manager
         args:
         - --leader-elect
-        image: quay.io/opstree/redis-operator:v0.3.0
+        image: quay.io/chunzhan/redis-operator:0.5.3
         name: manager
         securityContext:
           allowPrivilegeEscalation: false
