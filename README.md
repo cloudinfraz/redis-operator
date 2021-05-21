@@ -1,5 +1,5 @@
 # Redis Operator
-  This is a Red Hat OLM and Operator learning, development and training github repository, which inspired by https://github.com/OT-CONTAINER-KIT/redis-operator
+  This is a Red Hat OLM and Operator learning, development and training github repository, which inspired by the repo below:
 
 [OT-CONTAINER-KIT Redis Operator](https://github.com/OT-CONTAINER-KIT/redis-operator)
 
@@ -8,6 +8,15 @@
 <div align="center">
     <img src="./static/redis-comparsion.png">
 </div>
+
+# Roadmap
+
+- [ done ] Support the different redis configuration files for the master and slave nodes of redis cluster
+- [ ] Support Dynamic redis configuration parameter for redis cluster
+- [ ] Support tls
+- [ ] More feature extension
+- [ ] e2e tests
+
 
 <p align="center">
   <img src="./static/redis-operator-logo.svg" height="220" width="220">

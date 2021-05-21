@@ -126,7 +126,7 @@ func GenerateContainerDef(cr *redisv1beta1.Redis, role string) corev1.Container 
 			Name:      cr.ObjectMeta.Name + "-" + role + "conf",
 			MountPath: "/etc/redis",
 		}
-		containerDefinition.VolumeMounts = append(containerDefinition.VolumeMounts, VolumeMounts1,VolumeMounts2)
+		containerDefinition.VolumeMounts = append(containerDefinition.VolumeMounts, VolumeMounts1, VolumeMounts2)
 	}
 	if cr.Spec.GlobalConfig.Password != nil && cr.Spec.GlobalConfig.ExistingPasswordSecret == nil {
 		containerDefinition.Env = append(containerDefinition.Env, corev1.EnvVar{
@@ -235,14 +235,6 @@ func FinalContainerDef(cr *redisv1beta1.Redis, role string) []corev1.Container {
 	return containerDefinition
 }
 
-//func FinalVolumesDef(cr *redisv1beta1.Redis, role string) []corev1.Volume {
-//   var volumesDefinition []corev1.Volume
-//    if cr.Spec.Storage != nil {
-//	    volumesDefinition = append(volumesDefinition, GenerateVolumesDef(cr, role))
-//	    return containerDefinition
-//    }
-//}
-// CreateRedisMaster will create a Redis Master
 func CreateRedisMaster(cr *redisv1beta1.Redis) {
 
 	labels := map[string]string{

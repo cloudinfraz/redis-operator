@@ -20,7 +20,13 @@ spec:
   master:
     service:
       type: NodePort
-    redisConfig: {}
+    redisConfig:
+      save:
+        - "900 2"
+        - "300 1"
+        - "60 10000"
+      timeout:
+        - "5"
   slave:
     service:
       type: ClusterIP

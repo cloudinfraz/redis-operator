@@ -683,7 +683,9 @@ spec:
                 properties:
                   redisConfig:
                     additionalProperties:
-                      type: string
+                      items:
+                        type: string
+                      type: array
                     type: object
                   resources:
                     description: Resources describes requests and limits for the cluster
@@ -733,7 +735,9 @@ spec:
                 type: string
               redisConfig:
                 additionalProperties:
-                  type: string
+                  items:
+                    type: string
+                  type: array
                 type: object
               redisExporter:
                 description: RedisExporter interface will have the information for
@@ -970,7 +974,9 @@ spec:
                 properties:
                   redisConfig:
                     additionalProperties:
-                      type: string
+                      items:
+                        type: string
+                      type: array
                     type: object
                   resources:
                     description: Resources describes requests and limits for the cluster
@@ -1954,7 +1960,9 @@ spec:
                     properties:
                       redisConfig:
                         additionalProperties:
-                          type: string
+                          items:
+                            type: string
+                          type: array
                         type: object
                       resources:
                         description: Resources describes requests and limits for the
@@ -2004,7 +2012,9 @@ spec:
                     type: string
                   redisConfig:
                     additionalProperties:
-                      type: string
+                      items:
+                        type: string
+                      type: array
                     type: object
                   redisExporter:
                     description: RedisExporter interface will have the information
@@ -2245,7 +2255,9 @@ spec:
                     properties:
                       redisConfig:
                         additionalProperties:
-                          type: string
+                          items:
+                            type: string
+                          type: array
                         type: object
                       resources:
                         description: Resources describes requests and limits for the
