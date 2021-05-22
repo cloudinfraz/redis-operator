@@ -33,7 +33,7 @@ type RedisSpec struct {
 	Master            RedisMaster                `json:"master,omitempty"`
 	Slave             RedisSlave                 `json:"slave,omitempty"`
 	RedisExporter     *RedisExporter             `json:"redisExporter,omitempty"`
-	RedisConfig       map[string][]string          `json:"redisConfig"`
+	RedisConfig       map[string][]string        `json:"redisConfig"`
 	Resources         *Resources                 `json:"resources,omitempty"`
 	Storage           *Storage                   `json:"storage,omitempty"`
 	NodeSelector      map[string]string          `json:"nodeSelector,omitempty"`
@@ -55,9 +55,9 @@ type Storage struct {
 
 // RedisMaster interface will have the redis master configuration
 type RedisMaster struct {
-	Resources   Resources         `json:"resources,omitempty"`
+	Resources   Resources           `json:"resources,omitempty"`
 	RedisConfig map[string][]string `json:"redisConfig,omitempty"`
-	Service     Service           `json:"service,omitempty"`
+	Service     Service             `json:"service,omitempty"`
 }
 
 // RedisExporter interface will have the information for redis exporter related stuff
@@ -84,9 +84,9 @@ type ExistingPasswordSecret struct {
 
 // RedisSlave interface will have the redis slave configuration
 type RedisSlave struct {
-	Resources   Resources         `json:"resources,omitempty"`
+	Resources   Resources           `json:"resources,omitempty"`
 	RedisConfig map[string][]string `json:"redisConfig,omitempty"`
-	Service     Service           `json:"service,omitempty"`
+	Service     Service             `json:"service,omitempty"`
 }
 
 // ResourceDescription describes CPU and memory resources defined for a cluster.

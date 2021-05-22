@@ -7,7 +7,7 @@ spec:
   mode: cluster
   size: 3
   global:
-    image: quay.io/chunzhan/redis:v6.0.9
+    image: quay.io/chunzhan/redis:v6.2.3
     imagePullPolicy: IfNotPresent
     password: "Opstree@1234"
     resources:
@@ -20,7 +20,13 @@ spec:
   master:
     service:
       type: NodePort
-    redisConfig: {}
+    redisConfig:
+      save:
+        - "900 2"
+        - "300 10"
+        - "60 10000"
+      timeout:
+        - "5"
   slave:
     service:
       type: ClusterIP

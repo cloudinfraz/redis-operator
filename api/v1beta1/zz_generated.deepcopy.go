@@ -165,9 +165,17 @@ func (in *RedisMaster) DeepCopyInto(out *RedisMaster) {
 	out.Resources = in.Resources
 	if in.RedisConfig != nil {
 		in, out := &in.RedisConfig, &out.RedisConfig
-		*out = make(map[string]string, len(*in))
+		*out = make(map[string][]string, len(*in))
 		for key, val := range *in {
-			(*out)[key] = val
+			var outVal []string
+			if val == nil {
+				(*out)[key] = nil
+			} else {
+				in, out := &val, &outVal
+				*out = make([]string, len(*in))
+				copy(*out, *in)
+			}
+			(*out)[key] = outVal
 		}
 	}
 	out.Service = in.Service
@@ -189,9 +197,17 @@ func (in *RedisSlave) DeepCopyInto(out *RedisSlave) {
 	out.Resources = in.Resources
 	if in.RedisConfig != nil {
 		in, out := &in.RedisConfig, &out.RedisConfig
-		*out = make(map[string]string, len(*in))
+		*out = make(map[string][]string, len(*in))
 		for key, val := range *in {
-			(*out)[key] = val
+			var outVal []string
+			if val == nil {
+				(*out)[key] = nil
+			} else {
+				in, out := &val, &outVal
+				*out = make([]string, len(*in))
+				copy(*out, *in)
+			}
+			(*out)[key] = outVal
 		}
 	}
 	out.Service = in.Service
@@ -226,9 +242,17 @@ func (in *RedisSpec) DeepCopyInto(out *RedisSpec) {
 	}
 	if in.RedisConfig != nil {
 		in, out := &in.RedisConfig, &out.RedisConfig
-		*out = make(map[string]string, len(*in))
+		*out = make(map[string][]string, len(*in))
 		for key, val := range *in {
-			(*out)[key] = val
+			var outVal []string
+			if val == nil {
+				(*out)[key] = nil
+			} else {
+				in, out := &val, &outVal
+				*out = make([]string, len(*in))
+				copy(*out, *in)
+			}
+			(*out)[key] = outVal
 		}
 	}
 	if in.Resources != nil {
