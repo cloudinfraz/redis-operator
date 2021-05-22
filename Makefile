@@ -1,6 +1,6 @@
 # Current Operator version
 #VERSION ?=0.5.3
-VERSION ?=0.5.4
+VERSION ?=0.5.5
 # Default bundle image tag
 BUNDLE_IMG ?= quay.io/chunzhan/redis-operator-bundle:$(VERSION)
 # Options for 'bundle-build'
@@ -14,7 +14,7 @@ BUNDLE_METADATA_OPTS ?= $(BUNDLE_CHANNELS) $(BUNDLE_DEFAULT_CHANNEL)
 
 # Image URL to use all building/pushing image targets
 #IMG ?= quay.io/chunzhan/redis-operator:0.5.3
-IMG ?= quay.io/chunzhan/redis-operator:0.5.4
+IMG ?= quay.io/chunzhan/redis-operator:0.5.5
 # Produce CRDs that work back to Kubernetes 1.11 (no version conversion)
 CRD_OPTIONS ?= "crd:trivialVersions=true,preserveUnknownFields=false"
 

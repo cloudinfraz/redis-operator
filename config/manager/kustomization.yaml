@@ -13,4 +13,4 @@ kind: Kustomization
 images:
 - name: controller
   newName: quay.io/chunzhan/redis-operator
-  newTag: 0.5.4
+  newTag: 0.5.5

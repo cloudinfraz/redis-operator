@@ -58,10 +58,18 @@ func GenerateStateFulSetsDef(cr *redisv1beta1.Redis, labels map[string]string, r
 // GenerateVolumesDef generates volumes definition
 func GenerateVolumesDef(cr *redisv1beta1.Redis, role string) []corev1.Volume {
 	var volumesDefinition []corev1.Volume
+	var items []corev1.KeyToPath
+	items = append(items, corev1.KeyToPath{Key: "redis-config", Path: "redis.conf"})
+
 	volumesDefinition = append(volumesDefinition, corev1.Volume{
 		Name: cr.ObjectMeta.Name + "-" + role + "conf",
 		VolumeSource: corev1.VolumeSource{
-			EmptyDir: &corev1.EmptyDirVolumeSource{},
+			ConfigMap: &corev1.ConfigMapVolumeSource{
+				LocalObjectReference: corev1.LocalObjectReference{
+					Name: cr.ObjectMeta.Name + "-" + role + "conf",
+				},
+				Items: items,
+			},
 		},
 	})
 	return volumesDefinition
@@ -120,11 +128,13 @@ func GenerateContainerDef(cr *redisv1beta1.Redis, role string) corev1.Container 
 		VolumeMounts1 := corev1.VolumeMount{
 			Name:      cr.ObjectMeta.Name + "-" + role,
 			MountPath: "/data",
+			ReadOnly:  false,
 		}
 
 		VolumeMounts2 := corev1.VolumeMount{
 			Name:      cr.ObjectMeta.Name + "-" + role + "conf",
-			MountPath: "/etc/redis",
+			MountPath: "/opt/redis",
+			ReadOnly:  false,
 		}
 		containerDefinition.VolumeMounts = append(containerDefinition.VolumeMounts, VolumeMounts1, VolumeMounts2)
 	}

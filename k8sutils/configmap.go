@@ -13,15 +13,17 @@ import (
 // GenerateredisConf is a method that will generate a Redis Config interface
 func GeneratedefConf(cr *redisv1beta1.Redis, role string) string {
 	var initConf = make(map[string][]string)
-	initConf["cluster-enabled"] = []string{"yes"}
-	initConf["cluster-node-timeout"] = []string{"5000"}
-	initConf["cluster-require-full-coverage"] = []string{"no"}
-	initConf["cluster-migration-barrier"] = []string{"1"}
+	//initConf["cluster-enabled"] = []string{"yes"}
+	//initConf["cluster-node-timeout"] = []string{"5000"}
+	//initConf["cluster-require-full-coverage"] = []string{"no"}
+	//initConf["cluster-migration-barrier"] = []string{"1"}
 	initConf["save"] = []string{"900 1", "300 10", "60 10000"}
-	initConf["appendonly"] = []string{"yes"}
-	initConf["cluster-config-file"] = []string{"/data/nodes.conf"}
-	initConf["dir"] = []string{"/data"}
-	initConf["appendfilename"] = []string{"\"appendonly.aof\""}
+	initConf["timeout"] = []string{"0"}
+	initConf["tcp-keepalive"] = []string{"300"}
+	initConf["tcp-backlog"] = []string{"511"}
+	//initConf["cluster-config-file"] = []string{"/data/nodes.conf"}
+	//initConf["dir"] = []string{"/data"}
+	//initConf["appendfilename"] = []string{"\"appendonly.aof\""}
 	switch {
 	case role == "master":
 		masterRediscfg := &cr.Spec.Master.RedisConfig
@@ -87,11 +89,11 @@ func GenerateConfigMap(cr *redisv1beta1.Redis, role string) *corev1.ConfigMap {
 	configMapData := make(map[string]string, 0)
 	configMapData["redis-config"] = GeneratedefConf(cr, role)
 	labels := map[string]string{
-		"app": cr.ObjectMeta.Name + role + "conf",
+		"app": cr.ObjectMeta.Name + "-" + role + "conf",
 	}
 	ConfigMap := &corev1.ConfigMap{
 		TypeMeta:   GenerateMetaInformation("ConfigMap", "v1"),
-		ObjectMeta: GenerateObjectMetaInformation(cr.ObjectMeta.Name+role+"conf", cr.Namespace, labels, GenerateSecretAnots()),
+		ObjectMeta: GenerateObjectMetaInformation(cr.ObjectMeta.Name+"-"+role+"conf", cr.Namespace, labels, GenerateSecretAnots()),
 		Data:       configMapData,
 	}
 	AddOwnerRefToObject(ConfigMap, AsOwner(cr))
