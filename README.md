@@ -87,7 +87,33 @@ spec:
     value: "value1"
     effect: "NoSchedule"
 ```
+Integrated with Operatorhub
 
+```
+# Generate olm bundle catalog 
+
+make bundle
+
+# Upgrading a bundle that was installed traditionally using OLM
+oc create -f catalogsource.yaml
+
+# catalogsource.yaml
+
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: redis operator
+  namespace: default
+spec:
+  displayName: redis Operators
+  image: quay.io/chunzhan/redis-operator-bundle:0.5.5
+  sourceType: grpc
+
+# Generate bundle index image 
+
+opm index add --bundles quay.io/chunzhan/redis-operator-bundle:0.5.5  --tag quay.io/chunzhan/redis-operator-bundle-index:0.5.5 --container-tool docker
+
+```
 # Roadmap
 
 - [ done ] Support the different redis configuration files by RedisConf crd for the master and slave nodes of redis cluster
