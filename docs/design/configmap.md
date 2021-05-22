@@ -2,6 +2,6 @@
   configmap design draft
 
 <div align="center">
-    <img src="./static/configmap.png">
+    <img src="../../static/configmap.png">
 </div>
 
