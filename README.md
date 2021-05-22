@@ -1,5 +1,5 @@
 # Redis Operator
-  This is a Red Hat OLM and Operator learning, development and training github repository, which inspired by https://github.com/OT-CONTAINER-KIT/redis-operator
+  This is a Red Hat OLM and Operator learning, development and training github repository, which inspired by the repo below:
 
 [OT-CONTAINER-KIT Redis Operator](https://github.com/OT-CONTAINER-KIT/redis-operator)
 
@@ -9,129 +9,93 @@
     <img src="./static/redis-comparsion.png">
 </div>
 
-<p align="center">
-  <img src="./static/redis-operator-logo.svg" height="220" width="220">
-</p>
+# How to deploy the redis operator 
 
-<p align="center">
-  <a href="https://github.com/OT-CONTAINER-KIT/redis-operator">
-    <img src="https://github.com/OT-CONTAINER-KIT/redis-operator/workflows/CI%20Pipeline/badge.svg" alt="Github CI">
-  </a>
-  <a href="https://goreportcard.com/report/github.com/OT-CONTAINER-KIT/redis-operator">
-    <img src="https://goreportcard.com/badge/github.com/OT-CONTAINER-KIT/redis-operator" alt="GoReportCard">
-  </a>
-  <a href="http://golang.org">
-    <img src="https://img.shields.io/github/go-mod/go-version/OT-CONTAINER-KIT/redis-operator" alt="GitHub go.mod Go version (subdirectory of monorepo)">
-  </a>
-  <a href="http://golang.org">
-    <img src="https://img.shields.io/badge/Made%20with-Go-1f425f.svg" alt="made-with-Go">
-  </a>
-  <a href="https://quay.io/repository/opstree/redis-operator">
-    <img src="https://img.shields.io/badge/container-ready-green" alt="Docker">
-  </a>
-  <a href="https://github.com/OT-CONTAINER-KIT/redis-operator/master/LICENSE">
-    <img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License">
-  </a>
-</p>
+Build and deploy redis-operator container image
+```
+make docker-build
+make docker-push
 
-A Golang based redis operator that will make/oversee Redis standalone/cluster mode setup on top of the Kubernetes. It can create a redis cluster setup with best practices on Cloud as well as the Bare metal environment. Also, it provides an in-built monitoring capability using redis-exporter.
+make deploy 
 
-For documentation, please refer to https://ot-container-kit.github.io/redis-operator/
+#uninstall redis operator
+make undeploy
+```
+Deploy the redis cluster 
 
-## Architecture
+```
+kc -n redis-operator-system create -f example/redis-cluster-example.yaml
 
-<div align="center">
-    <img src="./static/redis-operator.png">
-</div>
-
-### Purpose
-
-The purpose of creating this operator was to provide an easy and production grade setup of Redis on Kubernetes. It doesn't care if you have a plain on-prem Kubernetes or cloud-based.
-
-### Supported Features
-
-Here the features which are supported by this operator:-
-
-- Redis cluster/standalone mode setup
-- Inbuilt monitoring with prometheus exporter
-- Dynamic storage provisioning with pvc template
-- Resources restrictions with k8s requests and limits
-- Password/Password-less setup
-- Node selector and affinity
-- Priority class to manage setup priority
-- SecurityContext to manipulate kernel parameters
-
-### Getting Started
-
-If you want to deploy redis-operator from scratch to a local Minikube cluster, begin with the [Getting started](https://ot-container-kit.github.io/redis-operator/#/quickstart/quickstart) document. It will guide your through the setup step-by-step.
-
-### Example
-
-The configuration of Redis setup should be described in Redis CRD. You will find all the examples manifests in [example](./example) folder.
-
-### Prerequisites
-
-Redis operator requires a Kubernetes cluster of version `>=1.8.0`. If you have just started with Operators, its highly recommended to use latest version of Kubernetes.
-
-### Quickstart
-
-The setup can be done by using helm. If you want to see more example, please go through the [example](./example) folder.
-
-But you can simply use the helm chart for installation.
-
-```shell
-# Add the helm chart
-$ helm repo add ot-helm https://ot-container-kit.github.io/helm-charts/
+---
+apiVersion: redis.redis.opstreelabs.in/v1beta1
+kind: Redis
+metadata:
+  name: redis
+spec:
+  mode: cluster
+  size: 3
+  global:
+    image: quay.io/chunzhan/redis:v6.2.3
+    imagePullPolicy: IfNotPresent
+    password: "Opstree@1234"
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 100m
+        memory: 128Mi
+  master:
+    service:
+      type: NodePort
+    redisConfig:
+      save:
+        - "900 2"
+        - "300 10"
+        - "60 10000"
+      timeout:
+        - "5"
+  slave:
+    service:
+      type: ClusterIP
+    redisConfig: {}
+  service:
+    type: ClusterIP
+  redisConfig: {}
+  redisExporter:
+    enabled: true
+    image: quay.io/opstree/redis-exporter:1.0
+    imagePullPolicy: Always
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 100m
+        memory: 128Mi
+  storage:
+    volumeClaimTemplate:
+      spec:
+        storageClassName: standard
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi
+  tolerations:
+  - key: "key1"
+    operator: "Equal"
+    value: "value1"
+    effect: "NoSchedule"
 ```
 
-```shell
-# Deploy the redis-operator
-$ helm upgrade redis-operator ot-helm/redis-operator --install --namespace redis-operator
-```
+# Roadmap
 
-After deployment, verify the installation of operator
+- [ done ] Support the different redis configuration files by RedisConf crd for the master and slave nodes of redis cluster
+- [ ] Support Dynamic redis configuration parameter for redis cluster by RedisConf crd
+- [ ] Support tls
+- [ ] More feature extension
+- [ ] e2e tests
 
-```shell
-$ helm test redis-operator --namespace redis-operator
-```
+- Reference:
 
-Creating redis cluster or standalone setup.
-
-```shell
-# Create redis cluster setup
-$ helm upgrade redis-cluster ot-helm/redis-setup \
-  --set setupMode="cluster" --set cluster.size=3 \
-  --install --namespace redis-operator
-```
-
-```shell
-# Create redis standalone setup
-$ helm upgrade redis ot-helm/redis-setup \
-  --set setupMode="standalone" \
-  --install --namespace redis-operator
-```
-
-If you want to customize the value file by yourself while initializing the helm command, the values files for reference are present [here](https://github.com/OT-CONTAINER-KIT/helm-charts/tree/main/charts/redis-setup)
-
-### Monitoring with Prometheus
-
-To monitor redis performance we will be using prometheus. In any case, extra prometheus configuration will not be required because we will be using the Prometheus service discover pattern. For that we already have set these annotations:-
-
-```yaml
-  annotations:
-    redis.opstreelabs.in: "true"
-    prometheus.io/scrape: "true"
-    prometheus.io/port: "9121"
-```
-
-### Development
-
-Please see our [DEVELOPMENT.md](https://ot-container-kit.github.io/redis-operator/guide/development.html) for details.
-
-### Release History
-
-Please see our [CHANGELOG.md](./CHANGELOG.md) for details.
-
-### Documentation
-
-Please see our [GETTING_STARTED.md](https://ot-container-kit.github.io/redis-operator/) for details.
+[gitlab-runner](https://gitlab.com/gitlab-org/gitlab-runner/blob/f4645bfbf947b761f69e8ba292bce84e5c95766d/executors/kubernetes/executor_kubernetes.go)
