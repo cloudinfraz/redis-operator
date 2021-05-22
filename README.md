@@ -9,7 +9,7 @@
     <img src="./static/redis-comparsion.png">
 </div>
 
-# How to deploy the redis operator 
+# How to 
 
 Build and deploy redis-operator container image
 ```
