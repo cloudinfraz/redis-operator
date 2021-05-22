@@ -9,6 +9,85 @@
     <img src="./static/redis-comparsion.png">
 </div>
 
+# How to 
+
+Build and deploy redis-operator container image
+```
+make docker-build
+make docker-push
+
+make deploy 
+
+#uninstall redis operator
+make undeploy
+```
+Deploy the redis cluster 
+
+```
+kc -n redis-operator-system create -f example/redis-cluster-example.yaml
+
+---
+apiVersion: redis.redis.opstreelabs.in/v1beta1
+kind: Redis
+metadata:
+  name: redis
+spec:
+  mode: cluster
+  size: 3
+  global:
+    image: quay.io/chunzhan/redis:v6.2.3
+    imagePullPolicy: IfNotPresent
+    password: "Opstree@1234"
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 100m
+        memory: 128Mi
+  master:
+    service:
+      type: NodePort
+    redisConfig:
+      save:
+        - "900 2"
+        - "300 10"
+        - "60 10000"
+      timeout:
+        - "5"
+  slave:
+    service:
+      type: ClusterIP
+    redisConfig: {}
+  service:
+    type: ClusterIP
+  redisConfig: {}
+  redisExporter:
+    enabled: true
+    image: quay.io/opstree/redis-exporter:1.0
+    imagePullPolicy: Always
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 100m
+        memory: 128Mi
+  storage:
+    volumeClaimTemplate:
+      spec:
+        storageClassName: standard
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi
+  tolerations:
+  - key: "key1"
+    operator: "Equal"
+    value: "value1"
+    effect: "NoSchedule"
+```
+
 # Roadmap
 
 - [ done ] Support the different redis configuration files by RedisConf crd for the master and slave nodes of redis cluster
