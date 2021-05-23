@@ -24,9 +24,10 @@ Redis configuration is very important for the different scenario, the redisConfi
   the initial redisConfig is not very clear defined, which can be elaborated
 
 redisConfig crd data type
-
 ```
 RedisConfig       map[string][]string        `json:"redisConfig"` \\the duplicated keys for some parameters
+
+# code
 masterRediscfg := &cr.Spec.Master.RedisConfig
 slaveRediscfg := &cr.Spec.Slave.RedisConfig
 standaloneRediscfg := &cr.Spec.RedisConfig
