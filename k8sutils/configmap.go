@@ -41,6 +41,14 @@ func GeneratedefConf(cr *redisv1beta1.Redis, role string) string {
 			slaveRedisconfig := MergeMap(initConf, *slaveRediscfg)
 			return AddsliceElements(*slaveRedisconfig)
 		}
+	case role == "standalone":
+		standaloneRediscfg := &cr.Spec.RedisConfig
+		if len(*standaloneRediscfg) == 0 {
+			return AddsliceElements(initConf)
+		} else {
+			standaloneRedisconfig := MergeMap(initConf, *standaloneRediscfg)
+			return AddsliceElements(*standaloneRedisconfig)
+		}
 	default:
 		return AddsliceElements(initConf)
 	}

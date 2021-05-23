@@ -78,10 +78,11 @@ func (r *RedisReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 	if err != nil && errors.IsNotFound(err) {
 		if instance.Spec.GlobalConfig.Password != nil && instance.Spec.GlobalConfig.ExistingPasswordSecret == nil {
 			k8sutils.CreateRedisSecret(instance)
-			k8sutils.CreateRedisConfigMap(instance, "master")
-			k8sutils.CreateRedisConfigMap(instance, "slave")
+
 		}
 		if instance.Spec.Mode == "cluster" {
+			k8sutils.CreateRedisConfigMap(instance, "master")
+			k8sutils.CreateRedisConfigMap(instance, "slave")
 			k8sutils.CreateRedisMaster(instance)
 			k8sutils.CreateMasterService(instance)
 			k8sutils.CreateMasterHeadlessService(instance)
@@ -112,6 +113,7 @@ func (r *RedisReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl
 				return ctrl.Result{RequeueAfter: time.Second * 120}, nil
 			}
 		} else if instance.Spec.Mode == "standalone" {
+			k8sutils.CreateRedisConfigMap(instance, "standalone")
 			k8sutils.CreateRedisStandalone(instance)
 			k8sutils.CreateStandaloneService(instance)
 			k8sutils.CreateStandaloneHeadlessService(instance)
