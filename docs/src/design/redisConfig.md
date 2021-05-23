@@ -6,8 +6,8 @@ Redis configuration is very important for the different scenario, the redisConfi
 
 - global redisConfig
 
-  The global redisConfig is only adopted by Redis standalone mode, I think it's too compliated to handle the global redisConfig for Redis cluster,
-  the master and slave redisConfig can be specified seperately
+  The global redisConfig is only adopted by Redis standalone mode, I think it's a bit of a redundancy if the global redisConfig will be 
+  specify for Redis cluster, the master and slave redisConfig already can be specified seperately
 
 - master redisConfig
 
