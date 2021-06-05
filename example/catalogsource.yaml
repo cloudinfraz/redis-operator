@@ -1,0 +1,9 @@
+apiVersion: operators.coreos.com/v1alpha1
+kind: CatalogSource
+metadata:
+  name: redis-operator
+  namespace: default
+spec:
+  displayName: redis Operators
+  image: quay.io/chunzhan/redis-operator-bundle:0.5.5
+  sourceType: grpc
