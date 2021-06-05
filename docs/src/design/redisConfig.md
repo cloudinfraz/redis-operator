@@ -35,13 +35,24 @@ standaloneRediscfg := &cr.Spec.RedisConfig
 ```
 **How to implement to change Redis configuration **
 
-Currently, only the static configuration can't be deployed, but the dynamic parameters will be implemented soon, there are two approach for the static configuration
+Currently, only the static configuration can be deployed(the dynamic parameters will be implemented soon), there are two approaches for the static configuration
 
 - init container
+
 Init containers can contain redis config file and will copy to the reids container ,then start the standalone/cluster of redis
 
 - the entrypoint.sh shell script of redis container
+
 the entrypoint.sh will read the redis config file,then append the initial redis config
+
+- the dynamic parameters
+
+Watching the redisCofig crd change, verity the real change when getting the change event of redisCofig crd,  there are two things have to be processed
+
+1. convert the crd parameters to the proper format,then call go-redis to pass the real parameters to the redis
+
+2. the crd parameters will be updated and persistent in redis config file
+
 
 **redisConfig crd definition **
 
