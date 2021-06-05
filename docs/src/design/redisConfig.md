@@ -12,12 +12,12 @@ Redis configuration is very important for the different scenario, the redisConfi
 - master redisConfig
 
   The master redisConfig will be adopted by Redis cluster mode for the master nodes, the initial redisConfig will enabled if the master or slave 
-  redisConfig will't be specified
+  redisConfig will not be specified
 
 - slave redisConfig
 
   The slave redisConfig will be adopted by Redis cluster mode for the slave nodes, the initial redisConfig will enabled if the master and slave
-  redisConfig will't be specified
+  redisConfig will not be specified
 
 - initial redisConfig 
 
@@ -33,6 +33,16 @@ slaveRediscfg := &cr.Spec.Slave.RedisConfig
 standaloneRediscfg := &cr.Spec.RedisConfig
 
 ```
+**How to implement to change Redis configuration **
+
+Currently, only the static configuration can't be deployed, but the dynamic parameters will be implemented soon, there are two approach for the static configuration
+
+- init container
+Init containers can contain redis config file and will copy to the reids container ,then start the standalone/cluster of redis
+
+- the entrypoint.sh shell script of redis container
+the entrypoint.sh will read the redis config file,then append the initial redis config
+
 **redisConfig crd definition **
 
 In Redis cluster mode
@@ -58,5 +68,5 @@ redisConfig:
 ```
 
 <div align="center">
-    <img src="../../static/configmap.png">
+    <img src="../../../static/configmap.png">
 </div>
