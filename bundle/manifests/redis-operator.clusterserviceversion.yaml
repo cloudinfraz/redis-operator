@@ -2,15 +2,33 @@ apiVersion: operators.coreos.com/v1alpha1
 kind: ClusterServiceVersion
 metadata:
   annotations:
-    alm-examples: '[]'
+    alm-examples: |-
+      [
+        {
+          "apiVersion": "redis.redis.opstreelabs.in/v1beta1",
+          "kind": "Redis",
+          "metadata": {
+            "name": "redis-sample"
+          },
+          "spec": {
+            "foo": "bar"
+          }
+        }
+      ]
     capabilities: Basic Install
-    operators.operatorframework.io/builder: operator-sdk-v1.4.2+git
+    operators.operatorframework.io/builder: operator-sdk-v1.9.0+git
     operators.operatorframework.io/project_layout: go.kubebuilder.io/v3
-  name: redis-operator.v0.5.2
+  name: redis-operator.v0.5.5
   namespace: placeholder
 spec:
   apiservicedefinitions: {}
-  customresourcedefinitions: {}
+  customresourcedefinitions:
+    owned:
+    - description: Redis is the Schema for the redis API
+      displayName: Redis
+      kind: Redis
+      name: redis.redis.redis.opstreelabs.in
+      version: v1beta1
   description: redis-operator
   displayName: redis-operator
   icon:
@@ -18,7 +36,104 @@ spec:
     mediatype: ""
   install:
     spec:
-      deployments: []
+      clusterPermissions:
+      - rules:
+        - apiGroups:
+          - authentication.k8s.io
+          resources:
+          - tokenreviews
+          verbs:
+          - create
+        - apiGroups:
+          - authorization.k8s.io
+          resources:
+          - subjectaccessreviews
+          verbs:
+          - create
+        serviceAccountName: redis-operator
+      deployments:
+      - name: redis-operator
+        spec:
+          replicas: 1
+          selector:
+            matchLabels:
+              control-plane: redis-operator
+          strategy: {}
+          template:
+            metadata:
+              labels:
+                control-plane: redis-operator
+            spec:
+              containers:
+              - args:
+                - --secure-listen-address=0.0.0.0:8443
+                - --upstream=http://127.0.0.1:8080/
+                - --logtostderr=true
+                - --v=10
+                image: gcr.io/kubebuilder/kube-rbac-proxy:v0.5.0
+                name: kube-rbac-proxy
+                ports:
+                - containerPort: 8443
+                  name: https
+                resources: {}
+              - args:
+                - --health-probe-bind-address=:8081
+                - --metrics-bind-address=127.0.0.1:8080
+                - --leader-elect
+                command:
+                - /manager
+                image: quay.io/chunzhan/redis-operator:0.5.5
+                livenessProbe:
+                  httpGet:
+                    path: /healthz
+                    port: 8081
+                  initialDelaySeconds: 15
+                  periodSeconds: 20
+                name: manager
+                readinessProbe:
+                  httpGet:
+                    path: /readyz
+                    port: 8081
+                  initialDelaySeconds: 5
+                  periodSeconds: 10
+                resources:
+                  limits:
+                    cpu: 100m
+                    memory: 30Mi
+                  requests:
+                    cpu: 100m
+                    memory: 20Mi
+                securityContext:
+                  allowPrivilegeEscalation: false
+              securityContext:
+                runAsUser: 65532
+              serviceAccount: redis-operator
+              serviceAccountName: redis-operator
+              terminationGracePeriodSeconds: 10
+      permissions:
+      - rules:
+        - apiGroups:
+          - ""
+          - coordination.k8s.io
+          resources:
+          - configmaps
+          - leases
+          verbs:
+          - get
+          - list
+          - watch
+          - create
+          - update
+          - patch
+          - delete
+        - apiGroups:
+          - ""
+          resources:
+          - events
+          verbs:
+          - create
+          - patch
+        serviceAccountName: redis-operator
     strategy: deployment
   installModes:
   - supported: false
@@ -41,4 +156,4 @@ spec:
   provider:
     name: redis-operator
     url: https://github.com/OT-CONTAINER-KIT/redis-operator
-  version: 0.5.2
+  version: 0.5.5
