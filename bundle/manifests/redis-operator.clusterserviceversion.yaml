@@ -82,7 +82,7 @@ spec:
                 - --leader-elect
                 command:
                 - /manager
-                image: quay.io/chunzhan/redis-operator:0.5.5
+                image: quay.io/zhangchl007/redis-operator:0.5.5
                 livenessProbe:
                   httpGet:
                     path: /healthz
