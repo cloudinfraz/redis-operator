@@ -35,7 +35,7 @@ spec:
   mode: cluster
   size: 3
   global:
-    image: quay.io/chunzhan/redis:v6.2.3
+    image: quay.io/zhangchl007/redis:v6.2.3
     imagePullPolicy: IfNotPresent
     password: "Opstree@1234"
     resources:
@@ -106,12 +106,12 @@ metadata:
   namespace: default
 spec:
   displayName: redis Operators
-  image: quay.io/chunzhan/redis-operator-bundle:0.5.5
+  image: quay.io/zhangchl007/redis-operator-bundle:0.5.5
   sourceType: grpc
 
 # Generate bundle index image 
 
-opm index add --bundles quay.io/chunzhan/redis-operator-bundle:0.5.5  --tag quay.io/chunzhan/redis-operator-bundle-index:0.5.5 --container-tool docker
+opm index add --bundles quay.io/zhangchl007/redis-operator-bundle:0.5.5  --tag quay.io/zhangchl007/redis-operator-bundle-index:0.5.5 --container-tool docker
 
 ```
 # Roadmap

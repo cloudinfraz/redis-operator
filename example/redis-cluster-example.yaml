@@ -7,7 +7,7 @@ spec:
   mode: cluster
   size: 3
   global:
-    image: quay.io/chunzhan/redis:v6.2.6
+    image: quay.io/zhangchl007/redis:v6.2.6
     imagePullPolicy: IfNotPresent
     password: "Opstree@1234"
     resources:
