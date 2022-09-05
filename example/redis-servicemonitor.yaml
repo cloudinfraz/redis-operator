@@ -1,0 +1,20 @@
+
+# Prometheus Monitor Service (Metrics)
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    app: prometheus-redis-exporter
+  name: prometheus-redis-exporter
+  namespace: kube-monitoring 
+spec:
+  endpoints:
+  - honorLabels: true
+    path: /metrics
+    port: redis-exporter
+  jobLabel: prometheus
+  namespaceSelector:
+    any: true
+  selector:
+    matchLabels:
+      release: redis

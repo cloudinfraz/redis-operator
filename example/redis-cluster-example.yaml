@@ -7,9 +7,9 @@ spec:
   mode: cluster
   size: 3
   global:
-    image: quay.io/zhangchl007/redis:v6.2.6
+    image: quay.io/zhangchl007/redis:v5.0.14
     imagePullPolicy: IfNotPresent
-    password: "Opstree@1234"
+    password: "test.1234"
     resources:
       requests:
         cpu: 100m
@@ -26,7 +26,7 @@ spec:
         - "300 10"
         - "60 10000"
       timeout:
-        - "5"
+        - "6"
   slave:
     service:
       type: ClusterIP
@@ -48,7 +48,7 @@ spec:
   storage:
     volumeClaimTemplate:
       spec:
-        storageClassName: standard
+        storageClassName: default
         accessModes: ["ReadWriteOnce"]
         resources:
           requests:
